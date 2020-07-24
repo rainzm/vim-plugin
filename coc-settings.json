@@ -1,0 +1,18 @@
+{
+    "snippets.ultisnips.directories": [
+        "UltiSnips",
+        "gosnippets/UltiSnips"
+    ],
+    "suggest.floatEnable": false,
+    "suggest.maxCompleteItemCount": 20,
+    "suggest.minTriggerInputLength": 2,
+    "signature.enable": false,
+    "go.goplsPath": "/Users/rain/go/bin/gopls",
+    "go.goplsOptions": {
+        "completeUnimported": true
+    },
+    "python.jediEnabled": false,
+    "python.linting.enabled": true,
+    "bookmark.sign": ">",
+    "bookmark.signHl": "Todo"
+}
