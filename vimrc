@@ -37,7 +37,40 @@ nmap <Leader>Q :qa!<CR>
 nmap <C-B> <C-I>
 nmap <Leader>c zz<CR>15<C-E>
 
-" 窗口的映射暂时不需要
+" 辅助信息
+" 显示光标当前的位置
+" set ruler
+set cursorline
+" 禁止光标的闪烁
+" set guicursor+=a:blinkon0
+
+" 搜索高亮配置
+" 当输入查找命令时，再启用高亮
+noremap n :set hlsearch<cr>n
+noremap N :set hlsearch<cr>N
+noremap / :set hlsearch<cr>/
+noremap ? :set hlsearch<cr>?
+noremap * *:set hlsearch<cr>
+
+" ctrl+M 取消高亮
+nnoremap <C-M> :set nohlsearch<cr>
+
+" 缩进
+" 将制表符扩展为空格
+set expandtab
+" 设置编辑时制表符占用空格数
+set tabstop=4
+" 设置格式化时制表符占用空格数
+set shiftwidth=4
+" 让 vim 把连续数量的空格视为一个制表符
+set softtabstop=4
+
+set smartindent
+
+autocmd Filetype yaml setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+
+" 禁止折行
+" set nowrap
 
 " 开启实时搜索功能
 set incsearch
@@ -50,24 +83,14 @@ set wildmenu
 set splitright
 set splitbelow
 
-"let &t_ts = "\<Esc>]0"
-"let &t_fs = "\x7"
-"set title
-"set titlestring=nvim
-
-
 " vim-plug环境设置
 call plug#begin('~/.vim/plugged')
+" coc.nvim
+Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
 Plug 'honza/vim-snippets'
 
-if has('nvim')
-  Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
-  Plug 'kristijanhusak/defx-icons'
-else
-  Plug 'Shougo/defx.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
+Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'kristijanhusak/defx-icons'
 
 " markdown
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
@@ -83,11 +106,7 @@ Plug '~/.fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'antoinemadec/coc-fzf'
 
-" coc.nvim
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
 " 括号 引号自动补全
-" Plug 'Raimondi/delimitMate'
 Plug 'jiangmiao/auto-pairs'
 
 " vim-typora
@@ -97,13 +116,11 @@ Plug 'pearofducks/ansible-vim', { 'do': './UltiSnips/generate.sh' }
 
 " exchange
 Plug 'tommcdo/vim-exchange'
-" Plug 'easymotion/vim-easymotion'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
-" Plug 'tpope/vim-obsession'
 
 Plug 'airblade/vim-gitgutter' 
 " buffer
@@ -113,10 +130,30 @@ Plug 'morhetz/gruvbox'
 
 Plug 'voldikss/vim-floaterm'
 
-Plug 'voldikss/vim-translator'
+Plug 'mhinz/vim-startify'
 
+Plug 'voldikss/vim-translator'
 " 插件列表结束
 call plug#end()
+
+let g:loaded_netrw       = 1
+let g:loaded_netrwPlugin = 1
+
+" vim-startify
+let g:startify_session_dir = '~/.vim/sessions'
+let g:startify_bookmarks = [ 
+            \ {'o': '~/go/src/yunion.io/x/onecloud'}, 
+            \ {'s': '~/code/go/yunion/onecloud-service-operator'},
+            \ {'n': '~/Documents/NoteBook'},
+            \ ]
+let g:startify_session_persistence = 1
+let NERDTreeHijackNetrw = 0
+
+let g:startify_lists = [
+          \ { 'type': 'sessions',  'header': ['   Sessions']       },
+          \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+          \ ]
+
 
 " defx.vim
 " let g:maplocalleader=';'
@@ -124,13 +161,6 @@ nnoremap <silent> <Leader>1
 \ :<C-u>Defx -resume -toggle -buffer-name=tab`tabpagenr()`<CR>
 nnoremap <silent> <Leader>v
 \ :<C-u>Defx -resume -buffer-name=tab`tabpagenr()` -search=`expand('%:p')`<CR>
-
-" function! s:defx_mappings() abort
-" 	" Defx window keyboard mappings
-" 	setlocal signcolumn=no
-" 	" 使用回车打开文件
-" 	nnoremap <silent><buffer><expr> <CR> defx#do_action('multi', ['drop'])
-" endfunction
 
 call defx#custom#option('_', {
 	\ 'columns': 'indent:git:icons:filename',
@@ -182,15 +212,6 @@ function! s:defx_mappings() abort
                 \ defx#do_action('print')
 endfunction
 
-" session management {{{
-" let g:sessions_dir = "~/.vim/sessions"
-" exec 'nnoremap <Leader>ss :Obsession ' . g:sessions_dir . '/*.vim<C-D><BS><BS><BS><BS><BS>'
-" " exec 'nnoremap <Leader>sr :so ' . g:sessions_dir. '/*.vim<C-D><BS><BS><BS><BS><BS>'
-" nnoremap <silent> <Leader>sr  :<C-u>CocList sessions<cr>
-" " toggle pause session observe
-" nnoremap <Leader>sp :Obsession<CR>
-" " end of session management }}}
-
 " coc-smartf
 nmap f <Plug>(coc-smartf-forward)
 nmap F <Plug>(coc-smartf-backward)
@@ -222,9 +243,6 @@ nmap ]c <Plug>(GitGutterNextHunk)
 let g:vim_markdown_folding_disabled = 1
 let g:vmt_auto_update_on_save = 0
 
-" easymotion 设置
-" nmap s <Plug>(easymotion-s)
-
 " multiple cursors 设置
 nnoremap <silent> <c-q> :MultipleCursorsFind <C-R>/<CR>
 vnoremap <silent> <c-q> :MultipleCursorsFind <C-R>/<CR>
@@ -243,41 +261,6 @@ autocmd vimenter * colorscheme gruvbox
 let g:gruvbox_vert_split = 'bg0'
 let g:gruvbox_sign_column = 'bg0'
 
-" 辅助信息
-" 显示光标当前的位置
-" set ruler
-set cursorline
-" 禁止光标的闪烁
-set guicursor+=a:blinkon0
-
-" 搜索高亮配置
-" 当输入查找命令时，再启用高亮
-noremap n :set hlsearch<cr>n
-noremap N :set hlsearch<cr>N
-noremap / :set hlsearch<cr>/
-noremap ? :set hlsearch<cr>?
-noremap * *:set hlsearch<cr>
-
-" ctrl+M 取消高亮
-nnoremap <C-M> :set nohlsearch<cr>
-
-" 缩进
-" 将制表符扩展为空格
-set expandtab
-" 设置编辑时制表符占用空格数
-set tabstop=4
-" 设置格式化时制表符占用空格数
-set shiftwidth=4
-" 让 vim 把连续数量的空格视为一个制表符
-set softtabstop=4
-
-set smartindent
-
-autocmd Filetype yaml setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
-
-" 禁止折行
-" set nowrap
-
 " fzf配置
 map <Leader>p :Files<CR>
 map <Leader>b :Buffers<CR>
@@ -295,11 +278,6 @@ nnoremap <silent> <Leader>2  :<C-u>CocFzfList outline<CR>
 " coc-bookmark
 nmap <Leader>mn <Plug>(coc-bookmark-toggle)
 nnoremap <silent> <Leader>ml :<C-u>CocList bookmark<CR>
-
-" map <leader>f :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
-" <esc> delay
-" set timeoutlen=1000 ttimeoutlen=0
-
 
 " statusline
 " always display statusline
@@ -321,17 +299,11 @@ set statusline=%f%m%=%p%%
 " Use <C-k> for jump to previous placeholder, it's default of coc.nvim
 " let g:coc_snippet_prev = '<c-b>'
 
-
 " inoremap <silent><expr> <TAB>
 "       \ pumvisible() ? coc#_select_confirm() :
 "       \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
 "       \ <SID>check_back_space() ? "\<TAB>" :
 "       \ coc#refresh()
-
-" function! s:check_back_space() abort
-"   let col = col('.') - 1
-"   return !col || getline('.')[col - 1]  =~# '\s'
-" endfunction
 
 let g:coc_snippet_next = '<tab>'
 
@@ -346,10 +318,6 @@ let g:go_highlight_functions = 1
 let g:go_highlight_function_calls = 1
 let g:go_highlight_operators = 1
 set autowrite
-
-" youdao translater plugin
-" vnoremap <silent> <C-T> :<C-u>Ydv<CR>
-" nnoremap <silent> <C-T> :<C-u>Ydc<CR>
 
 " -------------------------------------------------------------------------------------------------
 " coc.nvim default settings
@@ -440,28 +408,28 @@ nmap <leader>rn <Plug>(coc-rename)
 " xmap <leader>f  <Plug>(coc-format-selected)
 " nmap <leader>f  <Plug>(coc-format-selected)
 
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder
-  " autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
+" augroup mygroup
+"   autocmd!
+"   " Setup formatexpr specified filetype(s).
+"   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+"   " Update signature help on jump placeholder
+"   " autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+" augroup end
 
 " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
+" xmap <leader>a  <Plug>(coc-codeaction-selected)
+" nmap <leader>a  <Plug>(coc-codeaction-selected)
 
-" Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-" nmap <leader>qf  <Plug>(coc-fix-current)
+" " Remap for do codeAction of current line
+" nmap <leader>ac  <Plug>(coc-codeaction)
+" " Fix autofix problem of current line
+" " nmap <leader>qf  <Plug>(coc-fix-current)
 
-" Create mappings for function text object, requires document symbols feature of languageserver.
-xmap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap if <Plug>(coc-funcobj-i)
-omap af <Plug>(coc-funcobj-a)
+" " Create mappings for function text object, requires document symbols feature of languageserver.
+" xmap if <Plug>(coc-funcobj-i)
+" xmap af <Plug>(coc-funcobj-a)
+" omap if <Plug>(coc-funcobj-i)
+" omap af <Plug>(coc-funcobj-a)
 
 " Use <C-d> for select selections ranges, needs server support, like: coc-tsserver, coc-python
 " nmap <silent> <C-d> <Plug>(coc-range-select)

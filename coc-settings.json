@@ -11,6 +11,8 @@
     "go.goplsOptions": {
         "completeUnimported": true
     },
+    "smartf.wordJump": false,
+    "smartf.jumpOnTrigger": false,
     "python.jediEnabled": false,
     "python.linting.enabled": true,
     "bookmark.sign": ">",
